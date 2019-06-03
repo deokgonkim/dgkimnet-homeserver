@@ -15,6 +15,11 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/03
+   
+    basic mybatis implementations added.
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/01
-    * build a basic web application constructure based on spring-archetype.
-    * basic rabbitmq client implementation.
+   
+    build a basic web application constructure based on spring-archetype.
+    basic rabbitmq client implementation.

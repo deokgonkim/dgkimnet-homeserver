@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="recent_week">
+    <insert id="insert_one"><![CDATA[
+insert into recent_week (agent_id,
+                         datetime,
+                         name,
+                         type,
+                         last_value,
+                         min_value,
+                         max_value,
+                         updated)
+                  values(#{agentId},
+                         #{datetime},
+                         #{name},
+                         #{type},
+                         #{value},
+                         0.0,
+                         0.0,
+                         now())
+]]></insert>
+    <update id="update_one"><![CDATA[
+update recent_week set last_value = #{value},
+                       updated = now()
+                 where agent_id = #{agentId}
+                   and name = #{name}
+                   and datetime = #{datetime}
+]]></update>
+    
+    <select id="select_one" resultType="homeserver.model.TimedSensorData"><![CDATA[
+select agent_id,
+       datetime,
+       name,
+       type,
+       last_value as value,
+       --last_value,
+       --min_value,
+       --max_value,
+       --updated
+  from recent_week
+ where agent_id = #{agentId}
+   and name = #{name}
+   and datetime = #{datetime}
+]]></select>
+</mapper>

@@ -20,8 +20,7 @@ public class IndexController {
     
     @RequestMapping("")
     public String index(ModelMap modelMap) {
-        modelMap.addAttribute("temperature", service.currentTemperature);
-        modelMap.addAttribute("humidity", service.currentHumidity);
+        modelMap.addAttribute("current", service.currentValues);
         return "home";
     }
 }
