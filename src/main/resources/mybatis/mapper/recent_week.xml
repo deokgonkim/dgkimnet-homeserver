@@ -44,4 +44,22 @@ select agent_id,
    and name = #{name}
    and datetime = #{datetime}
 ]]></select>
+
+    <select id="select_recent" resultType="homeserver.model.TimedSensorData"><![CDATA[
+select agent_id,
+       datetime,
+       name,
+       type,
+       last_value as value,
+       --last_value,
+       --min_value,
+       --max_value,
+       --updated
+  from recent_week
+ where agent_id = #{agentId}
+   and name = #{name}
+   and minute(datetime) % 10 = 0
+   and datetime between adddate(now(), -1) and now()
+ order by datetime
+]]></select>
 </mapper>

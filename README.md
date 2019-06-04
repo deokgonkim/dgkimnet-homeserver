@@ -15,6 +15,10 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/04
+   
+    Testing chart.js 
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/03
    
     basic mybatis implementations added.

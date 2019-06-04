@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -24,6 +27,13 @@ public class WeeklyStorageService {
     private DataSource dataSource = null;
     
     @Autowired private SqlSessionTemplate sqlSession;
+    
+    public List selectRecentListFor(String agentId, String name) throws SQLException {
+        Map parameters = new HashMap();
+        parameters.put("agentId", agentId);
+        parameters.put("name", name);
+        return sqlSession.selectList("recent_week.select_recent", parameters);
+    }
 
     public void insertOrUpdate(TimedSensorData data) throws SQLException {
         LOG.info(String.format("Got - {}", data));
