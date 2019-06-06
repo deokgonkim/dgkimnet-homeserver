@@ -15,6 +15,14 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/06
+   
+    Bootstraped and Time adjustable chart added.
+        * bootstrap added
+        * font awesome added
+        * jquery added
+        * startbootstrap added
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/04
    
     Testing chart.js 
