@@ -8,6 +8,7 @@
     <name>Home Server Webapp</name>
     <url>http://www.dgkim.net</url>
     <properties>
+        <ldap.url>ldaps://ossfsc.local:636/dc=ossfsc,dc=net</ldap.url>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -144,6 +145,12 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>

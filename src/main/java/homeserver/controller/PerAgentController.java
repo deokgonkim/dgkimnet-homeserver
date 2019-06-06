@@ -34,7 +34,7 @@ public class PerAgentController {
             @RequestParam(value="from", required=false) String from,
             @RequestParam(value="to", required=false) String to,
             ModelMap modelMap) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         
         long now = System.currentTimeMillis();
         long yesterday = now - ( 24 * 60 * 60 * 1000 );
