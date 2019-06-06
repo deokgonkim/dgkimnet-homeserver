@@ -1,5 +1,6 @@
 package homeserver.model;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -26,5 +27,10 @@ public class TimedSensorData extends SensorData {
     
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
+    }
+    
+    @Override
+    public String toString() {
+        return MessageFormat.format("homeserver.model.TimedSensorData({0}, {1}, {2}, {3}, {4})", agentId, name, type, value, datetime);
     }
 }

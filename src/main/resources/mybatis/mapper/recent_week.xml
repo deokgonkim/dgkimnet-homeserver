@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- 
+
 <mapper namespace="recent_week">
+
+    <select id="select_agents" resultType="java.lang.String"><![CDATA[
+select distinct agent_id from recent_week
+    ]]></select>
     <insert id="insert_one"><![CDATA[
 insert into recent_week (agent_id,
                          datetime,
@@ -60,6 +64,26 @@ select agent_id,
    and name = #{name}
    and minute(datetime) % 10 = 0
    and datetime between adddate(now(), -1) and now()
+   
+ order by datetime
+]]></select>
+
+
+    <select id="select_range" resultType="homeserver.model.TimedSensorData"><![CDATA[
+select agent_id,
+       datetime,
+       name,
+       type,
+       last_value as value,
+       --last_value,
+       --min_value,
+       --max_value,
+       --updated
+  from recent_week
+ where agent_id = #{agentId}
+   and name = #{name}
+   and minute(datetime) % 10 = 0
+   and datetime between #{from} and #{to}
  order by datetime
 ]]></select>
 </mapper>

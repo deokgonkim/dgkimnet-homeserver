@@ -1,7 +1,6 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
 
 <ul>
@@ -9,7 +8,25 @@
     <li><spring:message code="home.currenthumidity" /> : <span id="humidity">${current["humidity"]} % (${current["humidityDate"]})</span></li>
 </ul>
 
-<canvas id="myChart" width="400" height="100"></canvas>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-area-chart"></i> <spring:message code="home.temperaturechart" />
+    </div>
+    <div class="card-body">
+        <canvas id="tempChart" width="100%" height="30"></canvas>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-area-chart"></i> <spring:message code="home.humiditychart" />
+    </div>
+    <div class="card-body">
+        <canvas id="humiChart" width="100%" height="30"></canvas>
+    </div>
+</div>
+
+
 <script type="text/javascript">
 $(document).ready(function() {
     
@@ -19,14 +36,14 @@ $(document).ready(function() {
         success: function(data, textStatus, xhr) {
             var newData = {'xAxis': [], 'yAxis': []};
             data.forEach(function(data, index) {
-                newData.xAxis.push(new Date(data.datetime).toLocaleString());
+                
+                newData.xAxis.push(to_hhmm(new Date(data.datetime)));
                 newData.yAxis.push(Number(data.value));
             });
             
-            chart = createChart(newData);
+            chart = createChart('tempChart', newData);
             chart.data.datasets.push({
                 label: 'temperature',
-                yAxisID: 'Temperature',
                 borderColor: '#ffbc08',
                 data: newData.yAxis
             });
@@ -41,28 +58,25 @@ $(document).ready(function() {
         }
     });
     
-    setTimeout(function() {
-        
-    
     $.ajax({
         url: '<c:url value="/data/home.RPi.DHT11/humidity/recent" />',
         success: function(data, textStatus, xhr) {
             
             var newData = {'xAxis': [], 'yAxis': []};
             data.forEach(function(data, index) {
-                newData.xAxis.push(new Date(data.datetime));
+                newData.xAxis.push(to_hhmm(new Date(data.datetime)));
+                //newData.xAxis.push(new Date(data.datetime));
                 newData.yAxis.push(Number(data.value));
                 //newData.yAxis[1].push(Number(data.value)-3);
             });
             
-            
-            window.myChart.data.datasets.push({
+            chart = createChart('humiChart', newData)
+            chart.data.datasets.push({
                 label: 'Humidity',
-                yAxisID: 'Humidity',
                 borderColor: '#1878f0',
                 data: newData.yAxis
             });
-            window.myChart.update();
+            chart.update();
         },
         error: function(xhr, textStatus, errorThrown) {
             console.log('error');
@@ -72,42 +86,35 @@ $(document).ready(function() {
             console.log(data);
         }
     });
-    
-    }, 1000);
 });
 
-function createChart(data) {
-    var ctx = document.getElementById('myChart').getContext('2d');
-    window.myChart = new Chart(ctx, {
+function createChart(elementId, data) {
+    var ctx = document.getElementById(elementId).getContext('2d');
+    chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.xAxis,
         },
         options: {
             scales: {
-                yAxes: [{
-                    id: 'Temperature',
-                    type: 'linear',
-                    position: 'left',
+                xAxes: [{
                     ticks: {
-                        fontColor: '#ffbc08',
-                        min: 20,
-                        max: 40
-                    }
-                }, {
-                    id: 'Humidity',
-                    type: 'linear',
-                    position: 'right',
-                    ticks: {
-                        fontColor: '#1878f0',
-                        max: 100,
-                        min: 0
+                      autoSkip: true,
+                      maxTicksLimit: 24
                     }
                 }]
             }
         }
     });
-    return window.myChart;
+    return chart;
+}
+
+function to_hhmm(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return hours + '' + minutes;
 }
 
 </script>

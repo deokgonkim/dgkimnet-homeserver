@@ -24,13 +24,12 @@ public class MqClientService {
     private WeeklyStorageService weeklyStorage;
     
     public void handleMessage(byte[] body) throws IOException {
+        LOG.info("Received sensor data : {}", new String(body, "UTF-8"));
         String[] message = new String(body, "UTF-8").split(",");
         String agentId = message[0];
         String name = message[1];
         String type = message[2];
         String value = message[3];
-        
-        LOG.info("Received sensor data : {0} {1} {2} {3}", message);
         
         Calendar currentDate = Calendar.getInstance();
         currentDate.set(Calendar.SECOND, 0);

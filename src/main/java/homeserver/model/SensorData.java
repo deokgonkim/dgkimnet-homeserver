@@ -8,10 +8,10 @@ package homeserver.model;
  */
 public class SensorData {
 
-    private String agentId;
-    private String name;
-    private String type;
-    private String value;
+    protected String agentId;
+    protected String name;
+    protected String type;
+    protected String value;
     
     public SensorData() {
         

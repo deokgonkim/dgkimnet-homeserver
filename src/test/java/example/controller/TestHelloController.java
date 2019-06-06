@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-        "classpath:spring/dispatcher-servlet.xml"
+        "classpath:spring/*.xml"
 })
 public class TestHelloController {
 

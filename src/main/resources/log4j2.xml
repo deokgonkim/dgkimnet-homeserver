@@ -10,6 +10,9 @@
         <Logger name="org.springframework" level="info" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
+        <Logger name="recent_week" level="debug" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
         <Root level="info" additivity="false">
             <AppenderRef ref="console" />
         </Root>

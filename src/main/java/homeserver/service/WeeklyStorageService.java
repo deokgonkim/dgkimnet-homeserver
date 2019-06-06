@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +29,35 @@ public class WeeklyStorageService {
     
     @Autowired private SqlSessionTemplate sqlSession;
     
+    /**
+     * returns Agents List for stored data
+     * 
+     * @see select_agents in file:mybatis/mapper/recent_week.xml
+     * @return
+     * @throws SQLException
+     */
+    public List<String> selectAgents() throws SQLException {
+        return sqlSession.selectList("recent_week.select_agents");
+    }
+    
     public List selectRecentListFor(String agentId, String name) throws SQLException {
         Map parameters = new HashMap();
         parameters.put("agentId", agentId);
         parameters.put("name", name);
         return sqlSession.selectList("recent_week.select_recent", parameters);
     }
+    
+    public List selectListForTimeRange(String agentId, String name, Date from, Date to) throws SQLException {
+        Map parameters = new HashMap();
+        parameters.put("agentId", agentId);
+        parameters.put("name", name);
+        parameters.put("from", from);
+        parameters.put("to", to);
+        return sqlSession.selectList("recent_week.select_range", parameters);
+    }
 
     public void insertOrUpdate(TimedSensorData data) throws SQLException {
-        LOG.info(String.format("Got - {}", data));
+        LOG.info("Got - {} {}", new Date(), data);
         TimedSensorData existingData = sqlSession.selectOne("recent_week.select_one", data);
         
         if (existingData == null) {

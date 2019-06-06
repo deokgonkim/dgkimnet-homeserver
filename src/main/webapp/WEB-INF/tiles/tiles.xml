@@ -6,7 +6,6 @@
     <definition name="default-def" template="/WEB-INF/tiles/layout/defaultLayout.jsp">
         <put-attribute name="title" value="" />
         <put-attribute name="header" value="/WEB-INF/tiles/template/header.jsp" />
-        <put-attribute name="menu" value="/WEB-INF/tiles/template/menu.jsp" />
         <put-attribute name="content" value="" />
         <put-attribute name="footer" value="/WEB-INF/tiles/template/footer.jsp" />
     </definition>
@@ -14,6 +13,10 @@
     <definition name="home" extends="default-def">
         <put-attribute name="title" value="" />
         <put-attribute name="content" value="/WEB-INF/tiles/page/home.jsp" />
+    </definition>
+    <definition name="agent" extends="default-def">
+        <put-attribute name="title" value="" />
+        <put-attribute name="content" value="/WEB-INF/tiles/page/agent.jsp" />
     </definition>
     
     <definition name="admin/*" extends="default-def">
