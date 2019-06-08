@@ -15,6 +15,12 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/08
+   
+    Tested IR Command send via MQ.
+        * originally, telegram bot received IR commands.
+        * added another python MQ consumer added (rpi_sensor project)
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/06
    
     Bootstraped and Time adjustable chart added.

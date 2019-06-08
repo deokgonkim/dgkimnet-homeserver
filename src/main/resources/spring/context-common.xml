@@ -22,10 +22,19 @@
         </rabbit:bindings>
     </rabbit:fanout-exchange>
     
+    <rabbit:template id="rabbitTemplate" connection-factory="rabbitConnectionFactory">
+    </rabbit:template>
+    
     <rabbit:queue auto-declare="true" exclusive="true" auto-delete="true" id="myQueue"/>
     
-    <rabbit:listener-container  connection-factory="rabbitConnectionFactory" >
+    <rabbit:queue auto-declare="true" exclusive="true" auto-delete="true" id="replyQueue"/>
+    
+    <rabbit:listener-container connection-factory="rabbitConnectionFactory" >
         <rabbit:listener queues="myQueue" ref="mqClientService" method="handleMessage"/>
+    </rabbit:listener-container>
+    
+    <rabbit:listener-container connection-factory="rabbitConnectionFactory" >
+        <rabbit:listener queues="replyQueue" ref="rabbitTemplate" />
     </rabbit:listener-container>
     
     <bean id="messageSource"
