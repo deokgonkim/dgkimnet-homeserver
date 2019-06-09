@@ -21,17 +21,25 @@
                 
                 <!--  -->
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#menuAccordion">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseAgents" data-parent="#menuAccordion">
                         <i class="fa fa-fw fa-microchip"></i>
                         <span class="nav-link-text"><spring:message code="nav.agents"/></span>
                     </a>
-                    <ul class="sidenav-second-level collapse" id="collapseComponents">
+                    <ul class="sidenav-second-level collapse" id="collapseAgents">
 <c:forEach var="agentName" items="${agents}">
                         <li>
                             <a class="nav-link" href="<c:url value="/agent/${agentName}" />">${agentName}</a>
                         </li>
 </c:forEach>
                     </ul>
+                </li>
+                
+                <!--  -->
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="<spring:message code="nav.aircon" />">
+                    <a class="nav-link" href="<c:url value="/aircon"/>">
+                        <i class="fa fa-fw fa-magic"></i>
+                        <span class="nav-link-text"><spring:message code="nav.aircon"/></span>
+                    </a>
                 </li>
                 
                 <!--  -->

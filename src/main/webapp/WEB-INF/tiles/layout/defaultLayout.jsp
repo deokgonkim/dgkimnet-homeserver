@@ -37,10 +37,6 @@
     <!-- Page level plugin JavaScript-->
     <script src="<c:url value="/vendor/datatables/jquery.dataTables.js" />"></script>
     <script src="<c:url value="/vendor/datatables/dataTables.bootstrap4.js" />"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="<c:url value="/vendor/sb-admin/js/sb-admin.min.js" />"></script>
-    <!-- Custom scripts for this page-->
-    <!-- script src="<c:url value="/vendor/sb-admin/js/sb-admin-datatables.min.js" />"></script -->
 </head>
 <body class="fixed-nav sticky-footer bg-dark">
     <tiles:insertAttribute name="header"/>
@@ -54,5 +50,9 @@
             </div>
         </footer>
     </div>
+    <!-- Custom scripts for all pages-->
+    <script src="<c:url value="/vendor/sb-admin/js/sb-admin.js" />"></script>
+    <!-- Custom scripts for this page-->
+    <!-- script src="<c:url value="/vendor/sb-admin/js/sb-admin-datatables.min.js" />"></script -->
 </body>
 </html>

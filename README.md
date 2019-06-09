@@ -15,6 +15,15 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/09
+   
+    Added AC remote control page.
+        * (trivial) quartz sql added.
+        * AC remote control page view added.
+        * AC remote control method added.
+        * AC remote control history table added.
+        * jquery datatables added.
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/08
    
     Tested IR Command send via MQ.

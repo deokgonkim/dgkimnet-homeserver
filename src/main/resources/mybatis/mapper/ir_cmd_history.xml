@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ir_cmd_history">
+
+    <select id="last_insert_id" resultType="int">
+SELECT LAST_INSERT_ID()
+    </select>
+
+    <insert id="insert_one" useGeneratedKeys="true" keyProperty="id"><![CDATA[
+insert into ir_cmd_history (agent_id,
+                            datetime,
+                            cmd,
+                            result)
+                  values(#{agentId},
+                         #{datetime},
+                         #{cmd},
+                         #{result})
+]]></insert>
+    <update id="update_one"><![CDATA[
+update ir_cmd_history set result = #{result}
+                    where id = #{id}
+]]></update>
+
+    <select id="select_recent" resultType="homeserver.model.IrCmdHistory"><![CDATA[
+select id,
+       agent_id,
+       datetime,
+       cmd,
+       result
+  from ir_cmd_history
+ order by datetime desc
+ limit 0, 10
+]]></select>
+
+    <select id="select_one" resultType="homeserver.model.IrCmdHistory"><![CDATA[
+select id,
+       agent_id,
+       datetime,
+       cmd,
+       result
+  from ir_cmd_history
+ where id = #{id}
+]]></select>
+
+    <select id="select_range" resultType="homeserver.model.IrCmdHistory"><![CDATA[
+select id,
+       agent_id,
+       datetime,
+       cmd,
+       result
+  from ir_cmd_history
+ where datetime between #{from} and #{to}
+ order by datetime
+]]></select>
+</mapper>
