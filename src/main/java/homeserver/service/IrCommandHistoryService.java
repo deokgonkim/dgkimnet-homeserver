@@ -24,10 +24,11 @@ public class IrCommandHistoryService {
         return sqlSession.selectList("ir_cmd_history.select_recent");
     }
     
-    public int insertCmdHistory(String agentId, String command) {
+    public int insertCmdHistory(String userPrincipal, String agentId, String command) {
         Map map = new HashMap();
         map.put("agentId", agentId);
         map.put("cmd", command);
+        map.put("creatorId", userPrincipal);
         sqlSession.insert("ir_cmd_history.insert_one", map);
         // TODO Is last_insert_id reliable?
         // Is there any possible cases resulting in wrong id?
@@ -35,10 +36,11 @@ public class IrCommandHistoryService {
         return id;
     }
     
-    public IrCmdHistory updateCmdHistory(int id, String result) {
+    public IrCmdHistory updateCmdHistory(String userPrincipal, int id, String result) {
         Map map = new HashMap();
         map.put("id", id);
         map.put("result", result);
+        map.put("modifierId", userPrincipal);
         sqlSession.update("ir_cmd_history.update_one", map);
         return sqlSession.selectOne("ir_cmd_history.select_one", id);
     }

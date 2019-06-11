@@ -12,14 +12,24 @@ SELECT LAST_INSERT_ID()
 insert into ir_cmd_history (agent_id,
                             datetime,
                             cmd,
-                            result)
+                            result,
+                            created,
+                            creator_id,
+                            modified,
+                            modifier_id)
                   values(#{agentId},
                          #{datetime},
                          #{cmd},
-                         #{result})
+                         #{result},
+                         now(),
+                         #{creatorId},
+                         now(),
+                         #{creatorId})
 ]]></insert>
     <update id="update_one"><![CDATA[
 update ir_cmd_history set result = #{result}
+                        , modified = now()
+                        , modifier_id = #{modifierId}
                     where id = #{id}
 ]]></update>
 
@@ -28,7 +38,11 @@ select id,
        agent_id,
        datetime,
        cmd,
-       result
+       result,
+       created,
+       creator_id,
+       modified,
+       modifier_id
   from ir_cmd_history
  order by datetime desc
  limit 0, 10
@@ -39,7 +53,11 @@ select id,
        agent_id,
        datetime,
        cmd,
-       result
+       result,
+       created,
+       creator_id,
+       modified,
+       modifier_id
   from ir_cmd_history
  where id = #{id}
 ]]></select>
@@ -49,7 +67,11 @@ select id,
        agent_id,
        datetime,
        cmd,
-       result
+       result,
+       created,
+       creator_id,
+       modified,
+       modifier_id
   from ir_cmd_history
  where datetime between #{from} and #{to}
  order by datetime

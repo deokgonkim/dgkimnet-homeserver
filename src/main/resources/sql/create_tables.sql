@@ -23,7 +23,11 @@ create table recent_year;
 create table ir_cmd_history (
     id int primary key auto_increment,
     agent_id varchar(80),
-    datetime timestamp,
+    datetime timestamp default 0,
     cmd varchar(20),
-    result varchar(80)
+    result varchar(80),
+    created timestamp,
+    creator_id varchar(80),
+    modified timestamp default current_timestamp on update current_timestamp,
+    modifier_id varchar(80)
 ) ENGINE=InnoDB;

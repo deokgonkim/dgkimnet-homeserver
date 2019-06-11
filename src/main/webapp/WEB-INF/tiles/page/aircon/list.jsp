@@ -34,6 +34,8 @@
                     <th><spring:message code="aircon.list.datetime" /></th>
                     <th><spring:message code="aircon.list.cmd" /></th>
                     <th><spring:message code="aircon.list.result" /></th>
+                    <th><spring:message code="aircon.list.modified" /></th>
+                    <th><spring:message code="aircon.list.modifierid" /></th>
                 </tr>
             </thead>
             <tfoot>
@@ -43,17 +45,12 @@
                     <th><spring:message code="aircon.list.datetime" /></th>
                     <th><spring:message code="aircon.list.cmd" /></th>
                     <th><spring:message code="aircon.list.result" /></th>
+                    <th><spring:message code="aircon.list.modified" /></th>
+                    <th><spring:message code="aircon.list.modifierid" /></th>
                 </tr>
             </tfoot>
             <tbody>
-                <tr>
-                    <td><spring:message code="aircon.list.no" /></td>
-                    <td><spring:message code="aircon.list.agentid" /></td>
-                    <td><spring:message code="aircon.list.datetime" /></td>
-                    <td><spring:message code="aircon.list.cmd" /></td>
-                    <td><spring:message code="aircon.list.result" /></td>
-                </tr>
-              </tbody>
+            </tbody>
           </table>
         </div>
     </div>
@@ -108,11 +105,17 @@ $(document).ready(function() {
     window.userTable = $('#dataTable').DataTable({
         'ajax': '<c:url value="/ac/history" />',
         'columns': [
-            { 'data': "id" },
-            { 'data': "agentId" },
-            { 'data': "datetime" },
-            { 'data': "cmd" },
-            { 'data': "result" }
+            { data: "id" },
+            { data: "agentId" },
+            { data: "datetime", render: function (data, type, row) {
+                return new Date(data).toLocaleString();
+            } },
+            { data: "cmd" },
+            { data: "result" },
+            { data: "modified", render: function (data, type, row) {
+                return new Date(data).toLocaleString();
+            } },
+            { data: "modifierId" }
         ],
         "order": [[2, 'desc']],
         "columnDefs": [{
@@ -121,7 +124,7 @@ $(document).ready(function() {
             "defaultContent": "<a class=\"\">--</a>"
         }],
         "initComplete": function (settings, json) {
-            $("#dataTableUpdated").html(json.serverDateTime);
+            $("#dataTableUpdated").html(new Date(json.serverDateTime).toLocaleString());
         }
     });
     // 테이블 리로드는 아래와 같이 한다.

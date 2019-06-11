@@ -15,6 +15,12 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/11
+   
+    Enhanced IR command history
+        * ir_cmd_history : columns added(created, creator_id, modified, modifier_id)
+        * testing quartz job
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/09
    
     Added AC remote control page.
