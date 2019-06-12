@@ -38,42 +38,8 @@
     </rabbit:listener-container>
     
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref bean="jobHeartbeatTrigger" />
-                <ref bean="jobTurnOnAcTrigger" />
-                <ref bean="jobTurnJetOnTrigger" />
-            </list>
-        </property>
-    </bean>
-    
-    <bean id="jobHeartbeat" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="scheduledJobs" />
-        <property name="targetMethod" value="heartbeat" />
-        <property name="concurrent" value="true" />
-    </bean>
-    <bean id="jobTurnOnAc" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="scheduledJobs" />
-        <property name="targetMethod" value="turnOnAc" />
-        <property name="concurrent" value="true" />
-    </bean>
-    <bean id="jobTurnJetOn" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="scheduledJobs" />
-        <property name="targetMethod" value="turnJetOn" />
-        <property name="concurrent" value="true" />
-    </bean>
-    
-    <bean id="jobHeartbeatTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobHeartbeat" />
-        <property name="cronExpression" value="0/10 * * * * ?" />
-    </bean>
-    <bean id="jobTurnOnAcTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobTurnOnAc" />
-        <property name="cronExpression" value="0 50 17 * * ?" />
-    </bean>
-    <bean id="jobTurnJetOnTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobTurnJetOn" />
-        <property name="cronExpression" value="0 51 17 * * ?" />
+        <property name="configLocation" value="classpath:/quartz.properties" />
+        <property name="dataSource" ref="dataSource" />
     </bean>
     
     <bean id="messageSource"

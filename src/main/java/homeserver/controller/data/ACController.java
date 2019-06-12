@@ -2,14 +2,24 @@ package homeserver.controller.data;
 
 import java.security.Principal;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,6 +42,9 @@ public class ACController {
     
     @Autowired
     private IrCommandHistoryService irCmdHistoryService = null;
+    
+    @Autowired
+    private SchedulerFactoryBean factory = null;
 
     @RequestMapping("/on")
     public @ResponseBody String acOn(@AuthenticationPrincipal String principal) {
@@ -79,5 +92,36 @@ public class ACController {
         map.put("data", irCmdHistoryService.selectRecent());
         map.put("serverDateTime", Calendar.getInstance().getTime());
         return map;
+    }
+    
+    @RequestMapping("/list_schedule")
+    public @ResponseBody List listSchedule(ModelMap modelMap) {
+        Scheduler scheduler = this.factory.getScheduler();
+        List<Map<String, Object>> scheduleList = new LinkedList<>();
+        
+        try {
+            for (String groupName : scheduler.getJobGroupNames()) {
+                for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+                    String jobName = jobKey.getName();
+                    String jobGroup = jobKey.getGroup();
+                    
+                    // get job's trigger
+                    List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
+                    Date nextFireTime = triggers.get(0).getNextFireTime();
+                    
+                    Map<String, Object> job = new HashMap<>();
+                    
+                    job.put("jobName", jobName);
+                    job.put("groupName", jobGroup);
+                    job.put("nextFireTime", nextFireTime);
+                    
+                    scheduleList.add(job);
+                }
+            }
+        } catch (SchedulerException e) {
+            LOG.error(e.getMessage(), e);
+            return Collections.emptyList();
+        }
+        return scheduleList;
     }
 }

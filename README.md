@@ -15,6 +15,10 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/12
+   
+    Testing Quartz Job backed RDBMS
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/11
    
     Enhanced IR command history
