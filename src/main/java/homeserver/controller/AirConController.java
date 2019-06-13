@@ -14,4 +14,9 @@ public class AirConController {
     public String list(ModelMap modelMap) {
         return "aircon/list";
     }
+    
+    @RequestMapping("/schedule")
+    public String schedule(ModelMap modelMap) {
+        return "aircon/schedule";
+    }
 }

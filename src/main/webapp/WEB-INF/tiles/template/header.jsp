@@ -43,6 +43,14 @@
                 </li>
                 
                 <!--  -->
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="<spring:message code="nav.aircon" />">
+                    <a class="nav-link" href="<c:url value="/aircon/schedule"/>">
+                        <i class="fa fa-fw fa-magic"></i>
+                        <span class="nav-link-text"><spring:message code="nav.scheduleaircon"/></span>
+                    </a>
+                </li>
+                
+                <!--  -->
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
                     <a class="nav-link" href="https://www.ossfsc.net/">
                         <i class="fa fa-fw fa-link"></i>

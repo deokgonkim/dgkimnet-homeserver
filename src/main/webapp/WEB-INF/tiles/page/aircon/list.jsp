@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
 
 <div class="mb-0 mt-4">
     <i class="fa fa-magic"></i> <spring:message code="aircon.list.airconcontrol" /></div>
@@ -56,6 +55,7 @@
     </div>
     <div class="card-footer small text-muted"><spring:message code="common.updated"/> : <span id="dataTableUpdated"></span></div>
 </div>
+
 <script type="text/javascript">
 $(document).ready(function() {
     
@@ -127,6 +127,7 @@ $(document).ready(function() {
             $("#dataTableUpdated").html(new Date(json.serverDateTime).toLocaleString());
         }
     });
+    
     // 테이블 리로드는 아래와 같이 한다.
     //window.userTable.ajax.reload();
     

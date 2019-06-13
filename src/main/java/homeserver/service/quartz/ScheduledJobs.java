@@ -17,12 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import homeserver.service.IrCommandHistoryService;
 import homeserver.service.MqClientService;
 
 @Component
-public class ScheduledJobs implements Job {
+public class ScheduledJobs {
     
     private static final Logger LOG = LoggerFactory.getLogger(ScheduledJobs.class);
     
@@ -32,41 +33,11 @@ public class ScheduledJobs implements Job {
     @Autowired
     private IrCommandHistoryService irCmdHistoryService = null;
     
-    @Autowired
-    private SchedulerFactoryBean factory = null;
-    
-    @PostConstruct
-    public void scheduleJobs() {
-        Scheduler scheduler = factory.getScheduler();
-        try {
-            scheduler.scheduleJob(this.jobDetail(), this.trigger(this.jobDetail()));
-            
-            scheduler.start();
-            
-        } catch (SchedulerException e) {
-            LOG.warn(e.getMessage(), e);
-        }
-         
-    }
-    
-    public JobDetail jobDetail() {
-        return JobBuilder.newJob().ofType(ScheduledJobs.class)
-          .storeDurably()
-          .withIdentity("Heartbeat Job")  
-          .withDescription("Invoke Sample Job service...")
+    public JobDetail jobDetail(String name, Class c) {
+        return JobBuilder.newJob().ofType(c)
+          //.storeDurably()
+          .withIdentity(name)
           .build();
-    }
-    
-    public Trigger trigger(JobDetail job) {
-        return TriggerBuilder.newTrigger().forJob(job)
-          .withIdentity("Qrtz_Trigger")
-          .withDescription("Sample trigger")
-          .withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInSeconds(10))
-          .build();
-    }
-    
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        this.heartbeat();
     }
     
     public void heartbeat() {
@@ -80,10 +51,69 @@ public class ScheduledJobs implements Job {
         irCmdHistoryService.updateCmdHistory("QUARTZ", id, result);
     }
     
-    public void turnJetOn() {
-        LOG.info("scheduled ac-on");
+    public void turnOffAc() {
+        LOG.info("scheduled ac-off");
+        int id = irCmdHistoryService.insertCmdHistory("QUARTZ", "AC", "ac-off");
+        String result = mqClient.sendMessage("ircommand", "ac-off");
+        irCmdHistoryService.updateCmdHistory("QUARTZ", id, result);
+    }
+    
+    public void turnOnJet() {
+        LOG.info("scheduled jet-on");
         int id = irCmdHistoryService.insertCmdHistory("QUARTZ", "AC", "jet-on");
         String result = mqClient.sendMessage("ircommand", "jet-on");
         irCmdHistoryService.updateCmdHistory("QUARTZ", id, result);
+    }
+    
+    public void turnOffJet() {
+        LOG.info("scheduled jet-off");
+        int id = irCmdHistoryService.insertCmdHistory("QUARTZ", "AC", "jet-off");
+        String result = mqClient.sendMessage("ircommand", "jet-off");
+        irCmdHistoryService.updateCmdHistory("QUARTZ", id, result);
+    }
+    
+    public static class AcOn implements Job {
+        
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.turnOnAc();
+        }
+    }
+    
+    public static class AcOff implements Job {
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.turnOffAc();
+        }
+    }
+    
+    public static class JetOn implements Job {
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.turnOnJet();
+        }
+    }
+    
+    public static class JetOff implements Job {
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.turnOffJet();
+        }
     }
 }

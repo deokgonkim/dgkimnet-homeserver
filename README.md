@@ -15,6 +15,11 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/13
+   
+    Testing Quartz Job backed RDBMS
+        * scheduling page added
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/12
    
     Testing Quartz Job backed RDBMS

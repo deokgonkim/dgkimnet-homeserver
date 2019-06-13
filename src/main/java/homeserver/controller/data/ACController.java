@@ -10,10 +10,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +31,12 @@ import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import homeserver.service.IrCommandHistoryService;
 import homeserver.service.MqClientService;
+import homeserver.service.quartz.ScheduledJobs;
 
 @Controller
 @RequestMapping("/ac")
@@ -45,6 +53,9 @@ public class ACController {
     
     @Autowired
     private SchedulerFactoryBean factory = null;
+    
+    @Autowired
+    private ScheduledJobs scheduleJobHolder = null;
 
     @RequestMapping("/on")
     public @ResponseBody String acOn(@AuthenticationPrincipal String principal) {
@@ -94,8 +105,59 @@ public class ACController {
         return map;
     }
     
+    @RequestMapping("/schedule")
+    public @ResponseBody String schedule(@RequestParam("cmd") String cmd,
+            @RequestParam("hhmm") String hhmm,
+            ModelMap modelMap) {
+        Scheduler scheduler = this.factory.getScheduler();
+        
+        
+        JobDetail jobDetail = null;
+        if ("ac-on".equals(cmd)) {
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.AcOn.class);
+        } else if ("ac-off".equals(cmd)) {
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.AcOff.class);
+        } else if ("jet-on".equals(cmd)) {
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.JetOn.class);
+        } else if ("jet-off".equals(cmd)) {
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.JetOff.class);
+        } else if ("temp-18".equals(cmd)) {
+            //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp18.class);
+            return "NotImplemented";
+        } else if ("temp-26".equals(cmd)) {
+            //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp26.class);
+            return "NotImplemented";
+        } else {
+            return "Error";
+        }
+        
+        
+        try {
+            scheduler.scheduleJob(jobDetail, this.trigger(jobDetail, hhmm.substring(0, 2), hhmm.substring(2)));
+        } catch (SchedulerException e) {
+            LOG.error(e.getMessage(), e);
+            return "Exception";
+        }
+        return "Ok";
+    }
+    
+    @RequestMapping("/unschedule")
+    public @ResponseBody String unschedule(@RequestParam("triggerGroup") String triggerGroupName,
+            @RequestParam("triggerName") String triggerName,
+            ModelMap modelMap) {
+        Scheduler scheduler = this.factory.getScheduler();
+        TriggerKey triggerKey = new TriggerKey(triggerName, triggerGroupName);
+        try {
+            scheduler.unscheduleJob(triggerKey);
+        } catch (SchedulerException e) {
+            LOG.warn(e.getMessage(), e);
+            return "Error";
+        }
+        return "Ok";
+    }
+    
     @RequestMapping("/list_schedule")
-    public @ResponseBody List listSchedule(ModelMap modelMap) {
+    public @ResponseBody Map listSchedule(ModelMap modelMap) {
         Scheduler scheduler = this.factory.getScheduler();
         List<Map<String, Object>> scheduleList = new LinkedList<>();
         
@@ -107,21 +169,47 @@ public class ACController {
                     
                     // get job's trigger
                     List<Trigger> triggers = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
-                    Date nextFireTime = triggers.get(0).getNextFireTime();
+                    
+                    String triggerName = "--";
+                    String triggerGroup = "--";
+                    Date nextFireTime = new Date(0);
+                    
+                    for (Trigger trigger : triggers) {
+                        triggerName = trigger.getKey().getName();
+                        triggerGroup = trigger.getKey().getGroup();
+                        nextFireTime = trigger.getNextFireTime();
+                    }
                     
                     Map<String, Object> job = new HashMap<>();
                     
                     job.put("jobName", jobName);
                     job.put("groupName", jobGroup);
                     job.put("nextFireTime", nextFireTime);
-                    
+                    job.put("triggerGroup", triggerGroup);
+                    job.put("triggerName", triggerName);
+                    job.put("nextFireTime", nextFireTime);
                     scheduleList.add(job);
                 }
             }
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
-            return Collections.emptyList();
+            Map map = new HashMap();
+            map.put("data", Collections.emptyList());
+            map.put("serverDateTime", Calendar.getInstance().getTime());
+            return map;
         }
-        return scheduleList;
+        
+        
+        Map map = new HashMap();
+        map.put("data", scheduleList);
+        map.put("serverDateTime", Calendar.getInstance().getTime());
+        return map;
+    }
+    
+    public Trigger trigger(JobDetail job, String hh, String mm) {
+        return TriggerBuilder.newTrigger().forJob(job)
+          .withIdentity(String.format("Trigger_%s%s", hh, mm))
+          .withSchedule(CronScheduleBuilder.cronSchedule(String.format("00 %s %s * * ?", mm, hh)))
+          .build();
     }
 }
