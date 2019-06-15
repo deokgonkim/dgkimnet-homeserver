@@ -13,6 +13,8 @@ homeserver will draw charts with received temperature and humidity.
 
 Chart data will be stored in relational database.
 
+![Screen](./example/screenshot1.png)
+
 ## Workhistory
 
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/15
