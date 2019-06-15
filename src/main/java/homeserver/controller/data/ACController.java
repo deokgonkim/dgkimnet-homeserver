@@ -114,17 +114,23 @@ public class ACController {
         
         JobDetail jobDetail = null;
         if ("ac-on".equals(cmd)) {
+            cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.AcOn.class);
         } else if ("ac-off".equals(cmd)) {
+            cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.AcOff.class);
         } else if ("jet-on".equals(cmd)) {
+            cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.JetOn.class);
         } else if ("jet-off".equals(cmd)) {
+            cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.JetOff.class);
         } else if ("temp-18".equals(cmd)) {
+            cmd += hhmm;
             //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp18.class);
             return "NotImplemented";
         } else if ("temp-26".equals(cmd)) {
+            cmd += hhmm;
             //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp26.class);
             return "NotImplemented";
         } else {
@@ -142,13 +148,17 @@ public class ACController {
     }
     
     @RequestMapping("/unschedule")
-    public @ResponseBody String unschedule(@RequestParam("triggerGroup") String triggerGroupName,
+    public @ResponseBody String unschedule(@RequestParam("jobGroup") String jobGroup,
+            @RequestParam("jobName") String jobName,
+            @RequestParam("triggerGroup") String triggerGroupName,
             @RequestParam("triggerName") String triggerName,
             ModelMap modelMap) {
         Scheduler scheduler = this.factory.getScheduler();
         TriggerKey triggerKey = new TriggerKey(triggerName, triggerGroupName);
+        JobKey jobKey = new JobKey(jobName, jobGroup);
         try {
             scheduler.unscheduleJob(triggerKey);
+            scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
             LOG.warn(e.getMessage(), e);
             return "Error";
@@ -183,7 +193,7 @@ public class ACController {
                     Map<String, Object> job = new HashMap<>();
                     
                     job.put("jobName", jobName);
-                    job.put("groupName", jobGroup);
+                    job.put("jobGroup", jobGroup);
                     job.put("nextFireTime", nextFireTime);
                     job.put("triggerGroup", triggerGroup);
                     job.put("triggerName", triggerName);

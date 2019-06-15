@@ -28,7 +28,7 @@
             <table class="table table-bordered" id="scheduleTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th><spring:message code="aircon.schedule.groupName" /></th>
+                    <th><spring:message code="aircon.schedule.jobGroup" /></th>
                     <th><spring:message code="aircon.schedule.jobName" /></th>
                     <th><spring:message code="aircon.schedule.triggerGroup" /></th>
                     <th><spring:message code="aircon.schedule.triggerName" /></th>
@@ -92,7 +92,7 @@ $(document).ready(function() {
     window.scheduleTable = $('#scheduleTable').DataTable({
         'ajax': '<c:url value="/ac/list_schedule" />',
         'columns': [
-            { data: "groupName" },
+            { data: "jobGroup" },
             { data: "jobName" },
             { data: "triggerGroup" },
             { data: "triggerName" },

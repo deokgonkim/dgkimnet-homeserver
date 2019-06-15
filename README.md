@@ -15,6 +15,11 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/15
+
+    Testing telegram bot
+        * When scheduled AC control, send notification message via telegram bot.
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/13
    
     Testing Quartz Job backed RDBMS

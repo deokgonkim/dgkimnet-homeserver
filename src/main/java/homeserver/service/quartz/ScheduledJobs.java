@@ -21,6 +21,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import homeserver.service.IrCommandHistoryService;
 import homeserver.service.MqClientService;
+import homeserver.service.TelegramBot;
 
 @Component
 public class ScheduledJobs {
@@ -77,10 +78,14 @@ public class ScheduledJobs {
         @Autowired 
         private ScheduledJobs service;
         
+        @Autowired
+        private TelegramBot telegramBot;
+        
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             service.turnOnAc();
+            telegramBot.sendMessage("Turned on AC");
         }
     }
     
@@ -88,10 +93,14 @@ public class ScheduledJobs {
         @Autowired 
         private ScheduledJobs service;
         
+        @Autowired
+        private TelegramBot telegramBot;
+        
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             service.turnOffAc();
+            telegramBot.sendMessage("Turned off AC");
         }
     }
     
@@ -99,10 +108,14 @@ public class ScheduledJobs {
         @Autowired 
         private ScheduledJobs service;
         
+        @Autowired
+        private TelegramBot telegramBot;
+        
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             service.turnOnJet();
+            telegramBot.sendMessage("Turned on AC Jet-mode");
         }
     }
     
@@ -110,10 +123,14 @@ public class ScheduledJobs {
         @Autowired 
         private ScheduledJobs service;
         
+        @Autowired
+        private TelegramBot telegramBot;
+        
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             service.turnOffJet();
+            telegramBot.sendMessage("Turned off AC Jet-mode");
         }
     }
 }
