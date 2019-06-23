@@ -16,9 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
         "classpath:spring/context-datasource.xml",
         "classpath:spring/context-mapper.xml"
 })
-public class TestMqClientService {
+public class MqClientServiceIT {
     
-    private static final Logger LOG = LoggerFactory.getLogger(TestMqClientService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MqClientServiceIT.class);
 
     @Autowired
     private MqClientService service = null;

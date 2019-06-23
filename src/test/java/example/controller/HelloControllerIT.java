@@ -15,9 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {
         "classpath:spring/*.xml"
 })
-public class TestHelloController {
+public class HelloControllerIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestHelloController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HelloControllerIT.class);
 
     @Autowired
     private HelloController controller = null;

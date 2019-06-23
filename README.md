@@ -17,6 +17,11 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/23
+   
+    Enhancement and bug fixes.
+        * code cleansing.
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/15
 
     Testing telegram bot

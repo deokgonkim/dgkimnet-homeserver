@@ -11,18 +11,21 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.ApiContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+import org.telegram.telegrambots.meta.generics.BotSession;
 
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
@@ -35,6 +38,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botToken = null;
     private long chatId = 0L;
     
+    private BotSession botSession = null;
+    
     static {
         // This should called first.
         ApiContextInitializer.init();
@@ -45,9 +50,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         TelegramBotsApi api = new  TelegramBotsApi();
         
         try {
-            api.registerBot(this);
+            botSession = api.registerBot(this);
         } catch (TelegramApiRequestException e) {
             LOG.warn(e.getMessage(), e);
+        }
+    }
+    
+    @PreDestroy
+    public void endBotSession() {
+        if (botSession != null) {
+            botSession.stop();
         }
     }
     
@@ -119,55 +131,29 @@ public class TelegramBot extends TelegramLongPollingBot {
     
     private static String getFileContent(String fileName) {
         String str = null;
-        File f = null;
-        FileInputStream fis = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        try {
-            f = new File(fileName);
-            fis = new FileInputStream(f);
-            isr = new InputStreamReader(fis);
-            br = new BufferedReader(isr);
+        File f = new File(fileName);
+        try (FileInputStream fis = new FileInputStream(f);
+             InputStreamReader isr = new InputStreamReader(fis);
+             BufferedReader br = new BufferedReader(isr)) {
             str = br.readLine();
         } catch (FileNotFoundException e) {
             LOG.warn(e.getMessage(), e);
         } catch (IOException e) {
             LOG.warn(e.getMessage(), e);
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    LOG.info(e.getMessage(), e);
-                }
-            }
         }
         return str;
     }
     
     private static void persistFileContent(String fileName, String content) {
-        File f = null;
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
-        try {
-            f = new File(fileName);
-            fos = new FileOutputStream(f);
-            osw = new OutputStreamWriter(fos);
-            bw = new BufferedWriter(osw);
+        File f = new File(fileName);
+        try (FileOutputStream fos = new FileOutputStream(f);
+             OutputStreamWriter osw = new OutputStreamWriter(fos);
+             BufferedWriter bw = new BufferedWriter(osw)) {
             bw.write(content);
         } catch (FileNotFoundException e) {
             LOG.warn(e.getMessage(), e);
         } catch (IOException e) {
             LOG.warn(e.getMessage(), e);
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    LOG.info(e.getMessage(), e);
-                }
-            }
         }
     }
 }

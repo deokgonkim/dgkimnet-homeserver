@@ -35,7 +35,7 @@ public class DbController {
             return strings;
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 }

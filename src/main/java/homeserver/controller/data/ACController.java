@@ -2,7 +2,6 @@ package homeserver.controller.data;
 
 import java.security.Principal;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,12 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -24,7 +21,6 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -59,47 +55,55 @@ public class ACController {
 
     @RequestMapping("/on")
     public @ResponseBody String acOn(@AuthenticationPrincipal String principal) {
-        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "ac-on");
-        String result = service.sendMessage("ircommand", "ac-on");
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "AcOn");
+        String result = service.sendAcOn();
         irCmdHistoryService.updateCmdHistory(principal, id, result);
         return result;
     }
     
     @RequestMapping("/off")
     public @ResponseBody String acOff(@AuthenticationPrincipal Principal principal) {
-        int id = irCmdHistoryService.insertCmdHistory(principal.getName(), "AC", "ac-off");
-        String result = service.sendMessage("ircommand", "ac-off");
+        int id = irCmdHistoryService.insertCmdHistory(principal.getName(), "AC", "AcOff");
+        String result = service.sendAcOff();
         irCmdHistoryService.updateCmdHistory(principal.getName(), id, result);
         return result;
     }
     
     @RequestMapping("/jet-on")
     public @ResponseBody String jetOn(@AuthenticationPrincipal String principal) {
-        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "jet-on");
-        String result = service.sendMessage("ircommand", "jet-on");
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "JetOn");
+        String result = service.sendJetOn();
         irCmdHistoryService.updateCmdHistory(principal, id, result);
         return result;
     }
     
     @RequestMapping("/jet-off")
     public @ResponseBody String jetOff(@AuthenticationPrincipal String principal) {
-        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "jet-off");
-        String result = service.sendMessage("ircommand", "jet-off");
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "JetOff");
+        String result = service.sendJetOff();
+        irCmdHistoryService.updateCmdHistory(principal, id, result);
+        return result;
+    }
+    
+    @RequestMapping("/temp-18")
+    public @ResponseBody String temp18(@AuthenticationPrincipal String principal) {
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "Temp18");
+        String result = service.sendTemp18();
         irCmdHistoryService.updateCmdHistory(principal, id, result);
         return result;
     }
     
     @RequestMapping("/temp-26")
     public @ResponseBody String temp26(@AuthenticationPrincipal String principal) {
-        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "temp-26");
-        String result = service.sendMessage("ircommand", "temp-26");
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "Temp26");
+        String result = service.sendTemp26();
         irCmdHistoryService.updateCmdHistory(principal, id, result);
         return result;
     }
     
     @RequestMapping("/history")
     public @ResponseBody Map history(ModelMap modelMap) {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("data", irCmdHistoryService.selectRecent());
         map.put("serverDateTime", Calendar.getInstance().getTime());
         return map;
@@ -127,12 +131,10 @@ public class ACController {
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.JetOff.class);
         } else if ("temp-18".equals(cmd)) {
             cmd += hhmm;
-            //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp18.class);
-            return "NotImplemented";
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp18.class);
         } else if ("temp-26".equals(cmd)) {
             cmd += hhmm;
-            //jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp26.class);
-            return "NotImplemented";
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp26.class);
         } else {
             return "Error";
         }
@@ -167,7 +169,7 @@ public class ACController {
     }
     
     @RequestMapping("/list_schedule")
-    public @ResponseBody Map listSchedule(ModelMap modelMap) {
+    public @ResponseBody Map<String, Object> listSchedule(ModelMap modelMap) {
         Scheduler scheduler = this.factory.getScheduler();
         List<Map<String, Object>> scheduleList = new LinkedList<>();
         
@@ -197,20 +199,19 @@ public class ACController {
                     job.put("nextFireTime", nextFireTime);
                     job.put("triggerGroup", triggerGroup);
                     job.put("triggerName", triggerName);
-                    job.put("nextFireTime", nextFireTime);
                     scheduleList.add(job);
                 }
             }
         } catch (SchedulerException e) {
             LOG.error(e.getMessage(), e);
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("data", Collections.emptyList());
             map.put("serverDateTime", Calendar.getInstance().getTime());
             return map;
         }
         
         
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("data", scheduleList);
         map.put("serverDateTime", Calendar.getInstance().getTime());
         return map;

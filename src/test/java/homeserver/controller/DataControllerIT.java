@@ -21,9 +21,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {
         "classpath:spring/*.xml"
 })
-public class TestDataController {
+public class DataControllerIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestDataController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataControllerIT.class);
     
     @Autowired
     private DataController controller = null;

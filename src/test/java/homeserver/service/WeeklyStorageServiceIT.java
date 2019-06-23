@@ -23,8 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
         "classpath:spring/context-datasource.xml",
         "classpath:spring/context-mapper.xml"
 })
-public class TestWeeklyStorageService {
-    private static final Logger LOG = LoggerFactory.getLogger(TestWeeklyStorageService.class);
+public class WeeklyStorageServiceIT {
+    private static final Logger LOG = LoggerFactory.getLogger(WeeklyStorageServiceIT.class);
 
     @Autowired
     private WeeklyStorageService service = null;

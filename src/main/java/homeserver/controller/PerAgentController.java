@@ -63,7 +63,7 @@ public class PerAgentController {
             agents = weeklyStorageService.selectAgents();
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
-            agents = Collections.EMPTY_LIST;
+            agents = Collections.emptyList();
         }
         return agents;
     }

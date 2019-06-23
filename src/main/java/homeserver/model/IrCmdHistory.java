@@ -14,9 +14,6 @@ public class IrCmdHistory {
     private Date modified;
     private String modifierId;
     
-    public IrCmdHistory() {
-    }
-    
     public int getId() {
         return id;
     }

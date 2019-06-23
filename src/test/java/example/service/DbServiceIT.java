@@ -19,9 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {
         "classpath:spring/context-*.xml"
 })
-public class TestDbService {
+public class DbServiceIT {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestDbService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DbServiceIT.class);
     
     @Autowired
     private DbService service = null;

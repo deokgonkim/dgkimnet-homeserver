@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import homeserver.service.TelegramBot;
 
-public class TestTelegramBot {
+public class TelegramBotIT {
     
-    private static final Logger LOG = LoggerFactory.getLogger(TestTelegramBot.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramBotIT.class);
 
     @Test
     public void test() {
@@ -20,9 +20,9 @@ public class TestTelegramBot {
             bot.initTelegramBot();
             
             bot.sendMessage("Hi this is test");
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             bot.sendMessage("Hi this is test2");
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             bot.sendMessage("Hi this is test3");
         } catch (InterruptedException e) {
             LOG.debug(e.getMessage(), e);

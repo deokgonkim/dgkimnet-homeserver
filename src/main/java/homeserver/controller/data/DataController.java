@@ -1,15 +1,10 @@
 package homeserver.controller.data;
 
-import homeserver.model.TimedSensorData;
 import homeserver.service.WeeklyStorageService;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -35,22 +30,15 @@ public class DataController {
 
     @RequestMapping("/{agentId}/{name}/recent")
     public @ResponseBody List listRecent(@PathVariable("agentId") String agentId, @PathVariable("name") String name) {
-        List<String> strings = new LinkedList<>();
-        try {
-            List list = service.selectRecentListFor(agentId, name);
-            return list;
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            return Collections.EMPTY_LIST;
-        }
+        return service.selectRecentListFor(agentId, name);
     }
     
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping("/{agentId}/{name}")
     public @ResponseBody List listRange(@PathVariable("agentId") String agentId,
             @PathVariable("name") String name,
             @RequestParam(value="from", required=false) String from,
             @RequestParam(value="to", required=false) String to) {
-        List<TimedSensorData> list = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         
         long now = System.currentTimeMillis();
@@ -68,13 +56,6 @@ public class DataController {
         } catch (ParseException e) {
             LOG.info(e.getMessage(), e);
         }
-        try {
-            list = service.selectListForTimeRange(agentId, name, fromDate, toDate);
-            return list;
-        } catch(SQLException e) {
-            LOG.error(e.getMessage(), e);
-            return Collections.EMPTY_LIST;
-        }
-        
+        return service.selectListForTimeRange(agentId, name, fromDate, toDate);
     }
 }

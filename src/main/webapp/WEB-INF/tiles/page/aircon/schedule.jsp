@@ -122,6 +122,7 @@ $(document).ready(function() {
             url: '<c:url value="/ac/unschedule"/>',
             data: row,
             success: function(data, status, xhr) {
+                window.scheduleTable.ajax.reload();
                 //debugger;
             },
             error: function(data, status, xhr) {

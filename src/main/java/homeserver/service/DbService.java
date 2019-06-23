@@ -23,44 +23,30 @@ public class DbService {
     
     public String getDbName() throws SQLException {
         String name = null;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT NAME FROM DB_NAME");
-            rs = pstmt.executeQuery();
-            if (rs.next()) {
-                name = rs.getString(1);
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT NAME FROM DB_NAME")){
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    name = rs.getString(1);
+                }
             }
         } catch(SQLException e) {
             LOG.error(e.getMessage(), e);
-        } finally {
-            if (rs != null) rs.close();
-            if (pstmt != null) pstmt.close();
-            if (conn != null) conn.close();
         }
         return name;
     }
     
     public Date getNow() throws SQLException {
         Date now = null;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT NOW()");
-            rs = pstmt.executeQuery();
-            if (rs.next()) {
-                now = rs.getDate(1);
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT NOW()");) {
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    now = rs.getDate(1);
+                }
             }
         } catch(SQLException e) {
             LOG.error(e.getMessage(), e);
-        } finally {
-            if (rs != null) rs.close();
-            if (pstmt != null) pstmt.close();
-            if (conn != null) conn.close();
         }
         return now;
     }

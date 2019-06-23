@@ -2,16 +2,11 @@ package homeserver.service;
 
 import homeserver.model.TimedSensorData;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
@@ -23,9 +18,6 @@ import org.springframework.stereotype.Service;
 public class WeeklyStorageService {
     
     private static final Logger LOG = LoggerFactory.getLogger(DbService.class);
-    
-    @Autowired
-    private DataSource dataSource = null;
     
     @Autowired private SqlSessionTemplate sqlSession;
     
@@ -40,14 +32,14 @@ public class WeeklyStorageService {
         return sqlSession.selectList("recent_week.select_agents");
     }
     
-    public List selectRecentListFor(String agentId, String name) throws SQLException {
+    public List selectRecentListFor(String agentId, String name) {
         Map parameters = new HashMap();
         parameters.put("agentId", agentId);
         parameters.put("name", name);
         return sqlSession.selectList("recent_week.select_recent", parameters);
     }
     
-    public List selectListForTimeRange(String agentId, String name, Date from, Date to) throws SQLException {
+    public List selectListForTimeRange(String agentId, String name, Date from, Date to) {
         Map parameters = new HashMap();
         parameters.put("agentId", agentId);
         parameters.put("name", name);
@@ -56,7 +48,7 @@ public class WeeklyStorageService {
         return sqlSession.selectList("recent_week.select_range", parameters);
     }
 
-    public void insertOrUpdate(TimedSensorData data) throws SQLException {
+    public void insertOrUpdate(TimedSensorData data) {
         LOG.info("Got - {} {}", new Date(), data);
         TimedSensorData existingData = sqlSession.selectOne("recent_week.select_one", data);
         
