@@ -12,6 +12,8 @@ public class SensorData {
     protected String name;
     protected String type;
     protected String value;
+    protected String maxValue;
+    protected String minValue;
     
     public SensorData() {
         
@@ -47,5 +49,17 @@ public class SensorData {
     }
     public void setValue(String value) {
         this.value = value;
+    }
+    public String getMaxValue() {
+        return maxValue;
+    }
+    public void setMaxValue(String maxValue) {
+        this.maxValue = maxValue;
+    }
+    public String getMinValue() {
+        return minValue;
+    }
+    public void setMinValue(String minValue) {
+        this.minValue = minValue;
     }
 }

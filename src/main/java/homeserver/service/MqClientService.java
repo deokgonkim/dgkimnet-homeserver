@@ -43,7 +43,6 @@ public class MqClientService {
     @Value("${mq.ircommand.temp26}")
     private String irCommandTemp26 = null;
     
-    
     @Autowired
     private WeeklyStorageService weeklyStorage;
     
@@ -101,6 +100,9 @@ public class MqClientService {
         
         Calendar currentDate = Calendar.getInstance();
         currentDate.set(Calendar.SECOND, 0);
+        
+        Calendar weekAgo = Calendar.getInstance();
+        
         
         TimedSensorData sensorData = new TimedSensorData(agentId, name, type, value, currentDate.getTime());
         

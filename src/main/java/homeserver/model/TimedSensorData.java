@@ -31,6 +31,6 @@ public class TimedSensorData extends SensorData {
     
     @Override
     public String toString() {
-        return MessageFormat.format("homeserver.model.TimedSensorData({0}, {1}, {2}, {3}, {4})", agentId, name, type, value, datetime);
+        return MessageFormat.format("homeserver.model.TimedSensorData({0}, {1}, {2}, {3}, {4}, {5}, {6})", agentId, name, type, value, minValue, maxValue, datetime);
     }
 }

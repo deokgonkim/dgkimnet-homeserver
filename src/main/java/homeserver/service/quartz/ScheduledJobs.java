@@ -1,5 +1,13 @@
 package homeserver.service.quartz;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -11,9 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import homeserver.model.TimedSensorData;
 import homeserver.service.IrCommandHistoryService;
+import homeserver.service.MonthlyStorageService;
 import homeserver.service.MqClientService;
 import homeserver.service.TelegramBot;
+import homeserver.service.WeeklyStorageService;
+//import homeserver.service.YearlyStorageService;
+import homeserver.util.DateTimeUtil;
 
 @Component
 public class ScheduledJobs {
@@ -26,6 +39,15 @@ public class ScheduledJobs {
     private MqClientService mqClient = null;
     
     @Autowired
+    private WeeklyStorageService weeklyStorage;
+    
+    @Autowired
+    private MonthlyStorageService monthlyStorage;
+    
+    //@Autowired
+    //private YearlyStorageService yearlyStorage;
+    
+    @Autowired
     private IrCommandHistoryService irCmdHistoryService = null;
     
     public JobDetail jobDetail(String name, Class c) {
@@ -33,6 +55,52 @@ public class ScheduledJobs {
           //.storeDurably()
           .withIdentity(name)
           .build();
+    }
+    
+    public void scheduleDataGardening() {
+        Date currentTime = DateTimeUtil.roundTo5Minute(DateTimeUtil.getCurrentDateTime());
+        Date fiveMinuteAgo = DateTimeUtil.addMinutes(currentTime, -5);
+        LOG.info(String.format("scheduleDataGardening : %s", fiveMinuteAgo));
+        
+        
+        List<TimedSensorData> recent5Minute = weeklyStorage.selectUpdatedWithin(fiveMinuteAgo, currentTime);
+        
+        // key : agentId+name, value : [ Date(rounded to 5 minute), ... ]
+        Map<String, Set<Date>> updatedTimeSet = new HashMap<>();
+        
+        for (TimedSensorData item : recent5Minute) {
+            LOG.info(String.format("Found item : %s", item));
+            String key = item.getAgentId() + "," + item.getName();
+            Date rounded = DateTimeUtil.roundTo5Minute(item.getDatetime());
+            if (updatedTimeSet.containsKey(key)) {
+                Set<Date> set = updatedTimeSet.get(key);
+                if (!set.contains(rounded)) {
+                    set.add(rounded);
+                }
+            } else {
+                Set<Date> newSet = new HashSet<>();
+                newSet.add(rounded);
+                updatedTimeSet.put(key, newSet);
+            }
+        }
+        
+        
+        LOG.info("To be updated");
+        for (String key : updatedTimeSet.keySet()) {
+            LOG.info(String.format("%s : %s", key, updatedTimeSet.get(key)));
+            for (Date from : updatedTimeSet.get(key)) {
+                Date to = DateTimeUtil.addMinutes(from, 5);
+                
+                TimedSensorData data = weeklyStorage.selectMinMaxAvg(key.split(",")[0], key.split(",")[1], from, to);
+                data.setDatetime(from);
+                monthlyStorage.insertOrUpdate(data);
+                LOG.info("Got data - {}", data);
+            }
+        }
+        
+        
+        //yearlyStorage.insertOrUpdate(recent1Hour);
+        
     }
     
     public void heartbeat() {
