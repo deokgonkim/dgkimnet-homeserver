@@ -17,6 +17,10 @@ Chart data will be stored in relational database.
 
 ## Workhistory
 
+   * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/25 ~ 2019/06/26
+
+    Data Mining feature added.
+
    * v1.0-SNAPSHOT - dgkim@dgkim.net 2019/06/23
    
     Enhancement and bug fixes.

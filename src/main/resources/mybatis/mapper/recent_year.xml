@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="recent_week">
+<mapper namespace="recent_year">
 
     <select id="select_agents" resultType="java.lang.String"><![CDATA[
-select distinct agent_id from recent_week
+select distinct agent_id from recent_year
     ]]></select>
     <insert id="insert_one"><![CDATA[
-insert into recent_week (agent_id,
+insert into recent_year (agent_id,
                          datetime,
                          name,
                          type,
@@ -21,12 +21,14 @@ insert into recent_week (agent_id,
                          #{name},
                          #{type},
                          #{value},
-                         0.0,
-                         0.0,
+                         #{minValue},
+                         #{maxValue},
                          now())
 ]]></insert>
     <update id="update_one"><![CDATA[
-update recent_week set last_value = #{value},
+update recent_year set last_value = #{value},
+                       min_value = #{minValue},
+                       max_value = #{maxValue},
                        updated = now()
                  where agent_id = #{agentId}
                    and name = #{name}
@@ -43,13 +45,13 @@ select agent_id,
        --min_value,
        --max_value,
        --updated
-  from recent_week
+  from recent_year
  where agent_id = #{agentId}
    and name = #{name}
    and datetime = #{datetime}
 ]]></select>
 
-    <!-- recent 2 hours, 120 samples -->
+    <!-- recent 120 hours, 120 samples -->
     <select id="select_recent" resultType="homeserver.model.TimedSensorData"><![CDATA[
 select agent_id,
        datetime,
@@ -60,10 +62,10 @@ select agent_id,
        --min_value,
        --max_value,
        --updated
-  from recent_week
+  from recent_year
  where agent_id = #{agentId}
    and name = #{name}
-   and datetime between addtime(now(), '-2:00:00') and now()
+   and datetime between adddate(now(), '-120:00:00') and now()
  order by datetime
 ]]></select>
 
@@ -78,7 +80,7 @@ select agent_id,
        --min_value,
        --max_value,
        --updated
-  from recent_week
+  from recent_year
  where agent_id = #{agentId}
    and name = #{name}
    and datetime between #{from} and #{to}
@@ -88,9 +90,8 @@ select agent_id,
     <select id="updated_between" resultType="homeserver.model.TimedSensorData"><![CDATA[
 select agent_id,
        name,
-       type,
        datetime
-  from recent_week
+  from recent_year
  where updated between #{from} and #{to}
  order by datetime, agent_id, name
     ]]></select>
@@ -99,13 +100,11 @@ select agent_id,
 select agent_id,
        name,
        type,
-       min(last_value) as minValue,
-       max(last_value) as `maxValue`,
-       round(avg(last_value), 1) as value
-  from recent_week
+       min(min_value) as min_value,
+       max(max_value) as max_value,
+       round(avg(last_value), 1) as last_value
+  from recent_year
  where datetime between #{from} and #{to}
-   and agent_id = #{agentId}
-   and name = #{name}
  group by agent_id, name, type
  order by datetime, agent_id, name
     ]]></select>

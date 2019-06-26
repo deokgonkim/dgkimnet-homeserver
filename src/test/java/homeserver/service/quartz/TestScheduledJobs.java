@@ -18,6 +18,7 @@ import homeserver.service.IrCommandHistoryService;
 import homeserver.service.MonthlyStorageService;
 import homeserver.service.MqClientService;
 import homeserver.service.WeeklyStorageService;
+import homeserver.service.YearlyStorageService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -46,6 +47,11 @@ public class TestScheduledJobs {
         }
         
         @Bean
+        public YearlyStorageService yearlyStorage() {
+            return new YearlyStorageService();
+        }
+        
+        @Bean
         public MqClientService mqService() {
             return null;
         }
@@ -62,8 +68,13 @@ public class TestScheduledJobs {
     }
     
     @Test
-    public void test() {
-        scheduledJobs.scheduleDataGardening();
+    public void testScheduleDataGardening5Minutely() {
+        //scheduledJobs.scheduleDataGardening5Minutely();
+    }
+    
+    @Test
+    public void testScheduleDataGardeningHourly() {
+        scheduledJobs.scheduleDataGardeningHourly();
     }
 
 }

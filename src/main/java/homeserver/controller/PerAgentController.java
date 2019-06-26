@@ -37,7 +37,7 @@ public class PerAgentController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         
         long now = System.currentTimeMillis();
-        long yesterday = now - ( 24 * 60 * 60 * 1000 );
+        long yesterday = now - ( 12 * 60 * 60 * 1000 );
         
         Date fromDate = new Date(yesterday);
         Date toDate = new Date(now);

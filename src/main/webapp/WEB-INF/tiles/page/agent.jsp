@@ -50,8 +50,8 @@ $(document).ready(function() {
         success: function(data, textStatus, xhr) {
             var newData = {'xAxis': [], 'yAxis': []};
             data.forEach(function(data, index) {
-                
-                newData.xAxis.push(to_hhmm(new Date(data.datetime)));
+                //newData.xAxis.push(new Date(data.datetime));
+                newData.xAxis.push(to_mmddhhmm(new Date(data.datetime)));
                 newData.yAxis.push(Number(data.value));
             });
             
@@ -79,7 +79,7 @@ $(document).ready(function() {
             var newData = {'xAxis': [], 'yAxis': []};
             data.forEach(function(data, index) {
                 //newData.xAxis.push(new Date(data.datetime));
-                newData.xAxis.push(to_hhmm(new Date(data.datetime)));
+                newData.xAxis.push(to_mmddhhmm(new Date(data.datetime)));
                 newData.yAxis.push(Number(data.value));
                 //newData.yAxis[1].push(Number(data.value)-3);
             });
@@ -123,12 +123,24 @@ function createChart(elementId, data) {
     return chart;
 }
 
+function to_mmddhhmm(date) {
+    var month = date.getMonth();
+    var dd = date.getDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    month += 1;
+    month = month < 10 ? '0' + month : month;
+    dd = dd < 10 ? '0' + dd : dd;
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return month + '-' + dd + ' ' + hours + ':' + minutes;
+}
 function to_hhmm(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
     hours = hours < 10 ? '0' + hours : hours;
     minutes = minutes < 10 ? '0' + minutes : minutes;
-    return hours + '' + minutes;
+    return hours + ':' + minutes;
 }
 
 </script>

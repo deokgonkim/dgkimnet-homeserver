@@ -51,6 +51,7 @@ select agent_id,
    and datetime = #{datetime}
 ]]></select>
 
+    <!-- recent 12 hours, 144 samples -->
     <select id="select_recent" resultType="homeserver.model.TimedSensorData"><![CDATA[
 select agent_id,
        datetime,
@@ -64,9 +65,7 @@ select agent_id,
   from recent_month
  where agent_id = #{agentId}
    and name = #{name}
-   and minute(datetime) % 10 = 0
-   and datetime between adddate(now(), -1) and now()
-   
+   and datetime between addtime(now(), '-12:00:00') and now()
  order by datetime
 ]]></select>
 
@@ -84,7 +83,6 @@ select agent_id,
   from recent_month
  where agent_id = #{agentId}
    and name = #{name}
-   and minute(datetime) % 10 = 0
    and datetime between #{from} and #{to}
  order by datetime
 ]]></select>
@@ -102,8 +100,8 @@ select agent_id,
 select agent_id,
        name,
        type,
-       min(last_value) as min_value,
-       max(last_value) as max_value,
+       min(min_value) as min_value,
+       max(max_value) as max_value,
        round(avg(last_value), 1) as last_value
   from recent_month
  where datetime between #{from} and #{to}

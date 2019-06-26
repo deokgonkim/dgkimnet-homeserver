@@ -40,22 +40,6 @@
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="configLocation" value="classpath:/quartz.properties" />
         <property name="dataSource" ref="dataSource" />
-        <property name="triggers">
-            <list>
-                <ref bean="jobTriggerDataGardening"/>
-            </list>
-        </property>
-    </bean>
-    
-    <bean id="jobDataGardening" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="scheduledJobs" />
-        <property name="targetMethod" value="scheduleDataGardening" />
-        <property name="concurrent" value="false" />
-    </bean>
-    
-    <bean id="jobTriggerDataGardening" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobDataGardening" />
-        <property name="cronExpression" value="0 0/5 * * * ?" />
     </bean>
     
     <bean id="messageSource"
