@@ -40,8 +40,14 @@ public class MqClientService {
     @Value("${mq.ircommand.temp18}")
     private String irCommandTemp18 = null;
     
+    @Value("${mq.ircommand.temp24}")
+    private String irCommandTemp24 = null;
+    
     @Value("${mq.ircommand.temp26}")
     private String irCommandTemp26 = null;
+    
+    @Value("${mq.ircommand.temp28}")
+    private String irCommandTemp28 = null;
     
     @Autowired
     private WeeklyStorageService weeklyStorage;
@@ -73,8 +79,16 @@ public class MqClientService {
         return sendMessage(queueIrCommand, irCommandTemp18);
     }
     
+    public String sendTemp24() {
+        return sendMessage(queueIrCommand, irCommandTemp24);
+    }
+    
     public String sendTemp26() {
         return sendMessage(queueIrCommand, irCommandTemp26);
+    }
+    
+    public String sendTemp28() {
+        return sendMessage(queueIrCommand, irCommandTemp28);
     }
     
     protected String sendMessage(String queue, String message) {

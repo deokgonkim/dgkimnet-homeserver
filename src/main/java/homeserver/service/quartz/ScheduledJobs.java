@@ -253,10 +253,24 @@ public class ScheduledJobs {
         irCmdHistoryService.updateCmdHistory(ME, id, result);
     }
     
+    public void temp24() {
+        LOG.info("scheduled temp-24");
+        int id = irCmdHistoryService.insertCmdHistory(ME, "AC", "Temp24");
+        String result = mqClient.sendTemp24();
+        irCmdHistoryService.updateCmdHistory(ME, id, result);
+    }
+    
     public void temp26() {
         LOG.info("scheduled temp-26");
         int id = irCmdHistoryService.insertCmdHistory(ME, "AC", "Temp26");
         String result = mqClient.sendTemp26();
+        irCmdHistoryService.updateCmdHistory(ME, id, result);
+    }
+    
+    public void temp28() {
+        LOG.info("scheduled temp-28");
+        int id = irCmdHistoryService.insertCmdHistory(ME, "AC", "Temp28");
+        String result = mqClient.sendTemp28();
         irCmdHistoryService.updateCmdHistory(ME, id, result);
     }
     
@@ -336,6 +350,21 @@ public class ScheduledJobs {
         }
     }
     
+    public static class Temp24 implements Job {
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Autowired
+        private TelegramBot telegramBot;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.temp24();
+            telegramBot.sendMessage("Setted temperature to 24");
+        }
+    }
+    
     public static class Temp26 implements Job {
         @Autowired 
         private ScheduledJobs service;
@@ -348,6 +377,21 @@ public class ScheduledJobs {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             service.temp26();
             telegramBot.sendMessage("Setted temperature to 26");
+        }
+    }
+    
+    public static class Temp28 implements Job {
+        @Autowired 
+        private ScheduledJobs service;
+        
+        @Autowired
+        private TelegramBot telegramBot;
+        
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+            service.temp28();
+            telegramBot.sendMessage("Setted temperature to 28");
         }
     }
     

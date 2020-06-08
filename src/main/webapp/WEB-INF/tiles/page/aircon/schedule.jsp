@@ -14,7 +14,9 @@
         <button type="button" id="btnJetOn" class="btn btn-primary"><spring:message code="aircon.schedule.jeton" /></button>
         <button type="button" id="btnJetOff" class="btn btn-primary"><spring:message code="aircon.schedule.jetoff" /></button>
         <button type="button" id="btnTemp18" class="btn btn-primary"><spring:message code="aircon.schedule.temp18" /></button>
+        <button type="button" id="btnTemp24" class="btn btn-primary"><spring:message code="aircon.schedule.temp24" /></button>
         <button type="button" id="btnTemp26" class="btn btn-primary"><spring:message code="aircon.schedule.temp26" /></button>
+        <button type="button" id="btnTemp28" class="btn btn-primary"><spring:message code="aircon.schedule.temp28" /></button>
     </div>
     
 </form>
@@ -85,8 +87,16 @@ $(document).ready(function() {
         scheduleAircon('temp-18');
     });
     
+    $('#btnTemp24').click(function() {
+        scheduleAircon('temp-24');
+    });
+    
     $('#btnTemp26').click(function() {
         scheduleAircon('temp-26');
+    });
+    
+    $('#btnTemp28').click(function() {
+        scheduleAircon('temp-28');
     });
     
     window.scheduleTable = $('#scheduleTable').DataTable({

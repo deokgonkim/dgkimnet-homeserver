@@ -93,10 +93,26 @@ public class ACController {
         return result;
     }
     
+    @RequestMapping("/temp-24")
+    public @ResponseBody String temp24(@AuthenticationPrincipal String principal) {
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "Temp24");
+        String result = service.sendTemp24();
+        irCmdHistoryService.updateCmdHistory(principal, id, result);
+        return result;
+    }
+    
     @RequestMapping("/temp-26")
     public @ResponseBody String temp26(@AuthenticationPrincipal String principal) {
         int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "Temp26");
         String result = service.sendTemp26();
+        irCmdHistoryService.updateCmdHistory(principal, id, result);
+        return result;
+    }
+    
+    @RequestMapping("/temp-28")
+    public @ResponseBody String temp28(@AuthenticationPrincipal String principal) {
+        int id = irCmdHistoryService.insertCmdHistory(principal, "AC", "Temp28");
+        String result = service.sendTemp28();
         irCmdHistoryService.updateCmdHistory(principal, id, result);
         return result;
     }
@@ -132,9 +148,15 @@ public class ACController {
         } else if ("temp-18".equals(cmd)) {
             cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp18.class);
+        } else if ("temp-24".equals(cmd)) {
+            cmd += hhmm;
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp24.class);
         } else if ("temp-26".equals(cmd)) {
             cmd += hhmm;
             jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp26.class);
+        } else if ("temp-28".equals(cmd)) {
+            cmd += hhmm;
+            jobDetail = scheduleJobHolder.jobDetail(cmd, ScheduledJobs.Temp28.class);
         } else {
             return "Error";
         }
